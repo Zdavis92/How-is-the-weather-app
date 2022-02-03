@@ -4,7 +4,15 @@
     text-align: center;
     padding: 5px;
 }
-
+h2 {
+    margin: 10px;
+}
+h3 {
+    margin: 20px;
+}
+.searchBox{
+    margin: 3px;
+}
 .searchedCities {
     border-top: black 3px;
 
