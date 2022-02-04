@@ -4,6 +4,8 @@ var cityName = ""
 var date = moment().format("MM/DD/YYYY");
 var cityNameEl = document.querySelector("#searchBox")
 var buttonEl = document.querySelector("#searchBtn");
+var searchedCitiesContainer = document.querySelector("#searchedCities");
+var savedCities = []
 var currentCon = {
     temp: "",
     wind: "",
@@ -42,9 +44,11 @@ var daysArr = [
     humidity: ""
 }]
 
-var search = function(event) {
-    cityName = cityNameEl.value
+var search = function() {
+    cityName = cityNameEl.value.toUpperCase();
     cityNameEl.value = ""
+    savedCities.unshift(cityName)
+    displySearchCities();
     getCityLatLon(cityName);
 }
 
@@ -68,7 +72,6 @@ var getWeatherData = function(lat, lon) {
     var apiLatLon = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&exclude=minutely,hourly,alerts&appid=7c0bd0cf3800dbf86808087317e3514f"
     fetch(apiLatLon).then(function(response) {
         response.json().then(function(data) {
-            console.log(data)
             currentCon.temp = data.current.temp
             currentCon.wind = data.current.wind_speed
             currentCon.humidity = data.current.humidity
@@ -92,7 +95,7 @@ var displyWeather = function() {
     var currentCityWindEl = document.createElement("p");
     var currentCityHumidityEl = document.createElement("p");
     var currentCityUvEl = document.createElement("p");
-    currentCityNameEl.textContent = cityName.toUpperCase() + " " + date;
+    currentCityNameEl.textContent = cityName + " " + date;
     currentCityTempEl.textContent = "Temp: " + currentCon.temp + "°F";
     currentCityWindEl.textContent = "Wind: " + currentCon.wind + "MPH";
     currentCityHumidityEl.textContent = "Humidity: " + currentCon.humidity + "%";
@@ -103,6 +106,7 @@ var displyWeather = function() {
     currentCityEl.appendChild(currentCityHumidityEl)
     currentCityEl.appendChild(currentCityUvEl)
     var forecastContainer = document.querySelector("#forecast");
+    forecastContainer.innerHTML = ""
     for (i = 0; i < daysArr.length; i++) {
         var colEl = document.createElement("div")
         colEl.classList.add("col", "card");
@@ -128,4 +132,22 @@ var displyWeather = function() {
         cardEl.appendChild(humidityEl)
     }
 }
+
+var displySearchCities = function () {
+    searchedCitiesContainer.innerHTML = ""
+    for (i = 0; i < 3; i++) {
+        var savedCityEl = document.createElement("p");
+        savedCityEl.textContent = savedCities[i];
+        searchedCitiesContainer.appendChild(savedCityEl);
+    }
+}
+
+var redisply = function(event) {
+    if (event.target){
+        cityNameEl.value = event.target.textContent;
+    search();
+    }
+}
+searchedCitiesContainer.addEventListener("click", redisply)
 buttonEl.addEventListener("click", search)
+
