@@ -1,7 +1,7 @@
 var lat = ""
 var lon = ""
 var cityName = ""
-var date = moment().format("MM DD YYYY");
+var date = moment().format("MM/DD/YYYY");
 var cityNameEl = document.querySelector("#searchBox")
 var buttonEl = document.querySelector("#searchBtn");
 var currentCon = {
@@ -74,18 +74,58 @@ var getWeatherData = function(lat, lon) {
             currentCon.humidity = data.current.humidity
             currentCon.UVIndex = data.current.uvi
             for (i = 0; i < daysArr.length; i++) {
-                daysArr[i].date = moment().add(i+1, 'days').format("MM DD YYYY")
+                daysArr[i].date = moment().add(i+1, 'days').format("MM/DD/YYYY")
                 daysArr[i].temp = data.daily[i].temp.day
                 daysArr[i].wind = data.daily[i].wind_speed
                 daysArr[i].humidity = data.daily[i].humidity
             }
-            console.log(daysArr);
+            displyWeather();
         })
     })
 }
 
 var displyWeather = function() {
-
+    var currentCityEl = document.querySelector("#currentCity");
+    currentCityEl.innerHTML = ""
+    var currentCityNameEl = document.createElement("h2");
+    var currentCityTempEl = document.createElement("p");
+    var currentCityWindEl = document.createElement("p");
+    var currentCityHumidityEl = document.createElement("p");
+    var currentCityUvEl = document.createElement("p");
+    currentCityNameEl.textContent = cityName.toUpperCase() + " " + date;
+    currentCityTempEl.textContent = "Temp: " + currentCon.temp + "°F";
+    currentCityWindEl.textContent = "Wind: " + currentCon.wind + "MPH";
+    currentCityHumidityEl.textContent = "Humidity: " + currentCon.humidity + "%";
+    currentCityUvEl.textContent = "UV Index: " + currentCon.UVIndex;
+    currentCityEl.appendChild(currentCityNameEl)
+    currentCityEl.appendChild(currentCityTempEl)
+    currentCityEl.appendChild(currentCityWindEl)
+    currentCityEl.appendChild(currentCityHumidityEl)
+    currentCityEl.appendChild(currentCityUvEl)
+    var forecastContainer = document.querySelector("#forecast");
+    for (i = 0; i < daysArr.length; i++) {
+        var colEl = document.createElement("div")
+        colEl.classList.add("col", "card");
+        var cardEl = document.createElement("div")
+        cardEl.classList.add("card-body");
+        var cardTitleEl = document.createElement("h5")
+        cardTitleEl.classList.add("card-title");
+        var tempEl = document.createElement("p")
+        tempEl.classList.add("card-text");
+        var windEl = document.createElement("p")
+        windEl.classList.add("card-text");
+        var humidityEl = document.createElement("p")
+        humidityEl.classList.add("card-text");
+        cardTitleEl.textContent = daysArr[i].date
+        tempEl.textContent = "Temp: " + daysArr[i].temp
+        windEl.textContent = "Wind: " + daysArr[i].wind
+        humidityEl.textContent = "Humidity: " + daysArr[i].humidity
+        forecastContainer.appendChild(colEl)
+        colEl.appendChild(cardEl)
+        cardEl.appendChild(cardTitleEl)
+        cardEl.appendChild(tempEl)
+        cardEl.appendChild(windEl)
+        cardEl.appendChild(humidityEl)
+    }
 }
 buttonEl.addEventListener("click", search)
-console.log(date);
