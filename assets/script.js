@@ -52,20 +52,20 @@ var daysArr = [
     wind: "",
     humidity: ""
 }]
-
+// takes city name in search bar and adds it to savedcities array and calls functions to show search cities, get the lat and lon of the searched city, and saves city to local storage.
 var search = function() {
     cityName = cityNameEl.value.toUpperCase();
     cityNameEl.value = ""
     savedCities.unshift(cityName)
-    displySearchCities();
+    displaySearchCities();
     getCityLatLon(cityName);
     saveCities(savedCities);
 }
-
+// function that saves the array of searched cities
 var saveCities = function(savedCities) {
     localStorage.setItem("cities", JSON.stringify(savedCities));
 }
-
+// checks for saved cities in local storage and loads the saved array. Resets array if one isn't found
 var loadCities = function() {
     if (JSON.parse(localStorage.getItem("cities") === null)) {
         savedCities = []
@@ -74,7 +74,7 @@ var loadCities = function() {
         savedCities = JSON.parse(localStorage.getItem("cities"));
     };
 }
-
+// function fetchs api to get lat and lon of the searched city and calls function to get the weather data
 var getCityLatLon = function(cityName) {
     if (cityName) {
         var apiCity = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=7c0bd0cf3800dbf86808087317e3514f"
@@ -90,7 +90,7 @@ var getCityLatLon = function(cityName) {
         alert("Enter a City Name")
     }
 }
-
+// calls the api to weather data for current and forecast and saves the data in objects. Calls function to display the data
 var getWeatherData = function(lat, lon) {
     var apiLatLon = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&exclude=minutely,hourly,alerts&appid=7c0bd0cf3800dbf86808087317e3514f"
     fetch(apiLatLon).then(function(response) {
@@ -107,12 +107,12 @@ var getWeatherData = function(lat, lon) {
                 daysArr[i].wind = data.daily[i].wind_speed
                 daysArr[i].humidity = data.daily[i].humidity
             }
-            displyWeather();
+            displayWeather();
         })
     })
 }
-
-var displyWeather = function() {
+// function dynamicly creates elements and added weather data to them. Then displays them on the screen.
+var displayWeather = function() {
     var currentCityEl = document.querySelector("#currentCity");
     currentCityEl.innerHTML = ""
     var currentCityNameEl = document.createElement("h2");
@@ -166,8 +166,8 @@ var displyWeather = function() {
     getWeatherIcon();
     unIndex();
 }
-
-var displySearchCities = function () {
+// This function displays previously searched cities in search history and updates it
+var displaySearchCities = function () {
     searchedCitiesContainer.innerHTML = ""
     for (i = 0; i < 3; i++) {
         var savedCityEl = document.createElement("p");
@@ -175,14 +175,14 @@ var displySearchCities = function () {
         searchedCitiesContainer.appendChild(savedCityEl);
     }
 }
-
-var redisply = function(event) {
+// function recalls the search on cities in search history that are clicked
+var redisplay = function(event) {
     if (event.target){
         cityNameEl.value = event.target.textContent;
     search();
     }
 }
-
+// assigns the weather icon that matches the code from the weather data
 var getWeatherIcon = function() {
     for (i = 0; i < iconArr.length; i++) {
         if (currentCon.icon === iconArr[i]) {
@@ -190,7 +190,7 @@ var getWeatherIcon = function() {
         }
     }
 }
-
+// assigns class to UV idex based on the weather data
 var unIndex = function() {
     if (parseInt(currentCon.UVIndex) > 8) {
         currentCityUvEl.classList.add("uvVeryHigh")
@@ -205,8 +205,9 @@ var unIndex = function() {
         currentCityUvEl.classList.add("uvLow")
     }
 }
+// call for the saved cities and for them to display
 loadCities();
-displySearchCities();
-searchedCitiesContainer.addEventListener("click", redisply)
+displaySearchCities();
+searchedCitiesContainer.addEventListener("click", redisplay)
 buttonEl.addEventListener("click", search)
 
