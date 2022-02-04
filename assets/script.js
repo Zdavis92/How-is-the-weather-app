@@ -6,6 +6,7 @@ var cityNameEl = document.querySelector("#searchBox")
 var buttonEl = document.querySelector("#searchBtn");
 var searchedCitiesContainer = document.querySelector("#searchedCities");
 var currentCityIconEl = document.createElement("img");
+var currentCityUvEl = document.createElement("p");
 var iconArr = ["01d", "01n", "02d", "02n", "03d", "03n", "04d", "04n", "09d", "09n", "10d", "10n", "11d", "11n", "13d", "13n", "50d", "50n"]
 var savedCities = []
 var currentCon = {
@@ -80,7 +81,6 @@ var getWeatherData = function(lat, lon) {
     var apiLatLon = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&exclude=minutely,hourly,alerts&appid=7c0bd0cf3800dbf86808087317e3514f"
     fetch(apiLatLon).then(function(response) {
         response.json().then(function(data) {
-            console.log(data);
             currentCon.icon = data.current.weather[0].icon
             currentCon.temp = data.current.temp
             currentCon.wind = data.current.wind_speed
@@ -105,7 +105,6 @@ var displyWeather = function() {
     var currentCityTempEl = document.createElement("p");
     var currentCityWindEl = document.createElement("p");
     var currentCityHumidityEl = document.createElement("p");
-    var currentCityUvEl = document.createElement("p");
     currentCityNameEl.textContent = cityName + " " + date;
     currentCityTempEl.textContent = "Temp: " + currentCon.temp + "°F";
     currentCityWindEl.textContent = "Wind: " + currentCon.wind + "MPH";
@@ -151,6 +150,7 @@ var displyWeather = function() {
         }
     }
     getWeatherIcon();
+    unIndex();
 }
 
 var displySearchCities = function () {
@@ -177,13 +177,20 @@ var getWeatherIcon = function() {
     }
 }
 
-// var getCardIcons = function() {
-//     for (y = 0; y < iconArr.length; y++) {
-//         if (daysArr[i].icon === iconArr[y]) {
-//             iconEl.setAttribute("src", "./assets/images/" +iconArr[y] + ".png")
-//         }
-//     }
-// }
+var unIndex = function() {
+    if (parseInt(currentCon.UVIndex) > 8) {
+        currentCityUvEl.classList.add("uvVeryHigh")
+    }
+    else if (parseInt(currentCon.UVIndex) > 6) {
+        currentCityUvEl.classList.add("uvHigh")
+    }
+    else if (parseInt(currentCon.UVIndex) > 3) {
+        currentCityUvEl.classList.add("uvModerate")
+    }
+    else {
+        currentCityUvEl.classList.add("uvLow")
+    }
+}
 searchedCitiesContainer.addEventListener("click", redisply)
 buttonEl.addEventListener("click", search)
 

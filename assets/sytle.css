@@ -24,3 +24,42 @@ h3 {
     min-width: 160px;
     max-width: 250px;
 }
+.row {
+    margin-left: 0;
+}
+.uvLow {
+    background-color: green;
+    display: inline-block;
+}
+.uvModerate {
+    background-color: yellow;
+    display: inline-block;
+}
+.uvHigh {
+    background-color: orange;
+    display: inline-block;
+}
+.uvVeryHigh {
+    background-color: red;
+    display: inline-block;
+}
+@media screen and (max-width: 575px) {
+    .row {
+        flex-direction: column;
+    }
+    body {
+        text-align: center;
+        justify-content: center;
+    }
+    .col-4 {
+        width: 100%;
+    }
+    .col-8 {
+        width: 100%;
+    }
+    #forecast {
+        flex-direction: row;
+    }
+
+
+}
