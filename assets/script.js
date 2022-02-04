@@ -59,6 +59,20 @@ var search = function() {
     savedCities.unshift(cityName)
     displySearchCities();
     getCityLatLon(cityName);
+    saveCities(savedCities);
+}
+
+var saveCities = function(savedCities) {
+    localStorage.setItem("cities", JSON.stringify(savedCities));
+}
+
+var loadCities = function() {
+    if (JSON.parse(localStorage.getItem("cities") === null)) {
+        savedCities = []
+    }
+    else {
+        savedCities = JSON.parse(localStorage.getItem("cities"));
+    };
 }
 
 var getCityLatLon = function(cityName) {
@@ -191,6 +205,8 @@ var unIndex = function() {
         currentCityUvEl.classList.add("uvLow")
     }
 }
+loadCities();
+displySearchCities();
 searchedCitiesContainer.addEventListener("click", redisply)
 buttonEl.addEventListener("click", search)
 
