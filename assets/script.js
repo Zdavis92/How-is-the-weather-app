@@ -5,8 +5,11 @@ var date = moment().format("MM/DD/YYYY");
 var cityNameEl = document.querySelector("#searchBox")
 var buttonEl = document.querySelector("#searchBtn");
 var searchedCitiesContainer = document.querySelector("#searchedCities");
+var currentCityIconEl = document.createElement("img");
+var iconArr = ["01d", "01n", "02d", "02n", "03d", "03n", "04d", "04n", "09d", "09n", "10d", "10n", "11d", "11n", "13d", "13n", "50d", "50n"]
 var savedCities = []
 var currentCon = {
+    icon: "",
     temp: "",
     wind: "",
     humidity: "",
@@ -15,30 +18,35 @@ var currentCon = {
 var daysArr = [
     day1 = {
     date: "",
+    icon: "",
     temp: "",
     wind: "",
     humidity: ""
 },
     day2 = {
     date: "",
+    icon: "",
     temp: "",
     wind: "",
     humidity: ""
 },
     day3 = {
     date: "",
+    icon: "",
     temp: "",
     wind: "",
     humidity: ""
 },
     day4 = {
     date: "",
+    icon: "",
     temp: "",
     wind: "",
     humidity: ""
 },
     day5 = {
     date: "",
+    icon: "",
     temp: "",
     wind: "",
     humidity: ""
@@ -72,12 +80,15 @@ var getWeatherData = function(lat, lon) {
     var apiLatLon = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&exclude=minutely,hourly,alerts&appid=7c0bd0cf3800dbf86808087317e3514f"
     fetch(apiLatLon).then(function(response) {
         response.json().then(function(data) {
+            console.log(data);
+            currentCon.icon = data.current.weather[0].icon
             currentCon.temp = data.current.temp
             currentCon.wind = data.current.wind_speed
             currentCon.humidity = data.current.humidity
             currentCon.UVIndex = data.current.uvi
             for (i = 0; i < daysArr.length; i++) {
                 daysArr[i].date = moment().add(i+1, 'days').format("MM/DD/YYYY")
+                daysArr[i].icon = data.daily[i].weather[0].icon
                 daysArr[i].temp = data.daily[i].temp.day
                 daysArr[i].wind = data.daily[i].wind_speed
                 daysArr[i].humidity = data.daily[i].humidity
@@ -101,6 +112,7 @@ var displyWeather = function() {
     currentCityHumidityEl.textContent = "Humidity: " + currentCon.humidity + "%";
     currentCityUvEl.textContent = "UV Index: " + currentCon.UVIndex;
     currentCityEl.appendChild(currentCityNameEl)
+    currentCityEl.appendChild(currentCityIconEl)
     currentCityEl.appendChild(currentCityTempEl)
     currentCityEl.appendChild(currentCityWindEl)
     currentCityEl.appendChild(currentCityHumidityEl)
@@ -114,6 +126,7 @@ var displyWeather = function() {
         cardEl.classList.add("card-body");
         var cardTitleEl = document.createElement("h5")
         cardTitleEl.classList.add("card-title");
+        var iconEl = document.createElement("img");
         var tempEl = document.createElement("p")
         tempEl.classList.add("card-text");
         var windEl = document.createElement("p")
@@ -121,6 +134,7 @@ var displyWeather = function() {
         var humidityEl = document.createElement("p")
         humidityEl.classList.add("card-text");
         cardTitleEl.textContent = daysArr[i].date
+        cardTitleEl.appendChild(iconEl)
         tempEl.textContent = "Temp: " + daysArr[i].temp
         windEl.textContent = "Wind: " + daysArr[i].wind
         humidityEl.textContent = "Humidity: " + daysArr[i].humidity
@@ -130,7 +144,13 @@ var displyWeather = function() {
         cardEl.appendChild(tempEl)
         cardEl.appendChild(windEl)
         cardEl.appendChild(humidityEl)
+        for (y = 0; y < iconArr.length; y++) {
+            if (daysArr[i].icon === iconArr[y]) {
+                iconEl.setAttribute("src", "./assets/images/" +iconArr[y] + ".png")
+            }
+        }
     }
+    getWeatherIcon();
 }
 
 var displySearchCities = function () {
@@ -148,6 +168,22 @@ var redisply = function(event) {
     search();
     }
 }
+
+var getWeatherIcon = function() {
+    for (i = 0; i < iconArr.length; i++) {
+        if (currentCon.icon === iconArr[i]) {
+            currentCityIconEl.setAttribute("src", "./assets/images/" +iconArr[i] + ".png")
+        }
+    }
+}
+
+// var getCardIcons = function() {
+//     for (y = 0; y < iconArr.length; y++) {
+//         if (daysArr[i].icon === iconArr[y]) {
+//             iconEl.setAttribute("src", "./assets/images/" +iconArr[y] + ".png")
+//         }
+//     }
+// }
 searchedCitiesContainer.addEventListener("click", redisply)
 buttonEl.addEventListener("click", search)
 
