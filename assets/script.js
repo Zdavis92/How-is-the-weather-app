@@ -77,7 +77,7 @@ var loadCities = function() {
 // function fetchs api to get lat and lon of the searched city and calls function to get the weather data
 var getCityLatLon = function(cityName) {
     if (cityName) {
-        var apiCity = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=7c0bd0cf3800dbf86808087317e3514f"
+        var apiCity = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=7c0bd0cf3800dbf86808087317e3514f"
         fetch(apiCity).then(function(response) {
             response.json().then(function(data){
                 lat = data[0].lat
